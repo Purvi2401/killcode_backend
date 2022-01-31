@@ -202,6 +202,7 @@ class round(APIView):
                         flag = 1
                     return Response(
                         {
+                            "message": "No rounds live",
                             "correct_ans": str(last_round_obj.ca),
                             "evidence_img": str(last_round_obj.evidence_img),
                             "encrypt_img": str(last_round_obj.encrypt_img),
@@ -214,6 +215,7 @@ class round(APIView):
                 else:
                     return Response(
                         {
+                            "message": "No rounds live",
                             "correct_ans": str(last_round_obj.ca),
                             "evidence_img": str(last_round_obj.evidence_img),
                             "encrypt_img": str(last_round_obj.encrypt_img),
@@ -235,6 +237,7 @@ class round(APIView):
                         flag = 1
                     return Response(
                         {
+                            "message": "No rounds live",
                             "correct_ans": str(last_round_obj.ca),
                             "evidence_img": str(last_round_obj.evidence_img),
                             "encrypt_img": str(last_round_obj.encrypt_img),
@@ -245,6 +248,7 @@ class round(APIView):
                 else:
                     return Response(
                         {
+                            "message": "No rounds live",
                             "correct_ans": str(last_round_obj.ca),
                             "evidence_img": str(last_round_obj.evidence_img),
                             "encrypt_img": str(last_round_obj.encrypt_img),
@@ -254,6 +258,7 @@ class round(APIView):
             else:
                 return Response(
                     {
+                        "message": "No rounds live",
                         "next_round": str(next_round),
                         "next_round_start_time": str(next_round_obj.start_time),
                         "status": 200,
