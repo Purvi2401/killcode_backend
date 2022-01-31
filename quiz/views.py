@@ -268,7 +268,10 @@ class evidence(APIView):
                         "encrypt_img": str(round.encrypt_img)
                     }
                 )
-        evidence = Evidence.objects.get(round__round_no=live_round)
+        try:
+            evidence = Evidence.objects.get(round__round_no=live_round)
+        except:
+            evidence = None
         if evidence is not None:
             if evidence.available:
                 return Response(
