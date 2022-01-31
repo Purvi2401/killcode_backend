@@ -393,6 +393,9 @@ class killcode(APIView):
                 lb = Universal.objects.all().first()
                 lb.leaderboard_freeze = True
                 lb.save()
+                team = Team.objects.get(user__username=request.user.username)
+                team.score+=1000
+                team.save()
                 # print(lb.leaderboard_freeze)
                 return Response("correct", status=status.HTTP_200_OK)
             else:
@@ -405,10 +408,11 @@ class killcode(APIView):
 @permission_classes([IsAuthenticated])
 class leaderboard(APIView):
     def get(self, request, format=None):
-        check_duration()
+        # check_duration()
         latest = latest_round()
         latest_round_obj = Round.objects.get(round_no=latest)
-        if check_round() == -1 or Universal.objects.all().first().leaderboard_freeze:
+        if check_round() == -1:
+            #  or Universal.objects.all().first().leaderboard_freeze
             if latest_round_obj is not None:
                 if latest_round_obj.check == 0:
                     calculate()
