@@ -19,18 +19,10 @@ def remove(temp):
     return temp.replace(" ", "")
 
 
-# def check_duration():
-#     tm = timezone.now()
-#     obj = Universal.objects.all().first()
-#     if tm > obj.end_time:
-#         Universal.objects.all().first().leaderboard_freeze = 1
-#     return
-
-
 def check_duration_kc():
     tm = timezone.now()
     obj = Universal.objects.all().first()
-    if tm > obj.start_time and tm <= obj.end_time:
+    if tm > obj.start_time and tm <= obj.end_time and obj.leaderboard_freeze == False:
         return True
     return False
 
@@ -64,14 +56,14 @@ def check_ans(a, b):
 
 
 def calculate_penalty(username):
-    round_no = max(latest_round(), check_round())
-    team = Team.objects.get(user__username=username)
-    # print(team)
-    if round_no < 5:
-        team.penalty += (round_no) * 4
-    else:
-        team.score += (2 * round.round_no - 4) * 5
-    team.save()
+    if latest_round() != 8:
+        round_no = max(latest_round(), check_round())
+        team = Team.objects.get(user__username=username)
+        if round_no < 5:
+            team.penalty += (round_no) * 5
+        else:
+            team.score += (2 * round.round_no - 4) * 5
+        team.save()
 
 
 def calculate():
@@ -95,7 +87,7 @@ def calculate():
                         team.score += (2 * round.round_no - 4) * 5
                     if check_ans(answer.victim, round.ca_victim):
                         team.score += (2 * round.round_no - 4) * 5
-                if check_ans(answer.location, round.ca_location) and check_ans(answer.victim, round.ca_victim):
+                if check_ans(answer.location, round.ca_location) or check_ans(answer.victim, round.ca_victim):
                     team.submit_time = answer.submit_time
                 # print(team.score)
                 team.save()
@@ -379,15 +371,16 @@ class killcode(APIView):
                 team = Team.objects.get(user__username=request.user.username)
                 team.score += 1000
                 team.save()
-                Universal.objects.all().first().end_time = datetime.datetime.now()
-                Universal.objects.all().first().save()
-                print(Universal.objects.all().first().end_time)
+                obj = Universal.objects.all().first()
+                obj.leaderboard_freeze = True
+                obj.save()
+                # print(obj.leaderboard_freeze)
                 return Response("correct", status=status.HTTP_200_OK)
             else:
                 calculate_penalty(request.user.username)
                 return Response("wrong", status=status.HTTP_200_OK)
         else:
-            return Response("Time duration over.", status=status.HTTP_403_FORBIDDEN)
+            return Response("Game over.", status=status.HTTP_403_FORBIDDEN)
 
 
 @permission_classes([IsAuthenticated])
