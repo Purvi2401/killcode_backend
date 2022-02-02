@@ -224,6 +224,7 @@ class round(APIView):
                 if ans is not None:
                     if check_ans(ans.location, last_round_obj.ca_location) and check_ans(ans.victim, last_round_obj.ca_victim):
                         flag_1 = 1
+                obj = Universal.objects.all().first()
                 return Response(
                     {
                         "message": "No rounds live",
@@ -234,6 +235,7 @@ class round(APIView):
                         "encrypt_img_blood": str(last_round_obj.blood_encrypt_img),
                         "flag_1": str(flag_1),
                         "flag_2": str(flag_2),
+                        "kill_code_time": str(obj.end_time),
                         "status": 200,
                     }
                 )
@@ -380,7 +382,7 @@ class killcode(APIView):
                 calculate_penalty(request.user.username)
                 return Response("wrong", status=status.HTTP_200_OK)
         else:
-            return Response("Game over.", status=status.HTTP_403_FORBIDDEN)
+            return Response("Game over", status=status.HTTP_403_FORBIDDEN)
 
 
 @permission_classes([IsAuthenticated])
