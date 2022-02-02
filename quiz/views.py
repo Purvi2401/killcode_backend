@@ -369,11 +369,13 @@ class killcode(APIView):
     def post(self, request):
         killcode = request.data.get("killcode")
         if check_duration_kc():
+            obj = Universal.objects.all().first()
+            obj.ans = killcode
+            obj.save()
             if check_ans(killcode, Universal.objects.all().first().killcode):
                 team = Team.objects.get(user__username=request.user.username)
                 team.score += 1000
-                team.save()
-                obj = Universal.objects.all().first()
+                team.save() 
                 obj.leaderboard_freeze = True
                 obj.save()
                 # print(obj.leaderboard_freeze)
@@ -383,6 +385,12 @@ class killcode(APIView):
                 return Response("wrong", status=status.HTTP_200_OK)
         else:
             return Response("Game over", status=status.HTTP_403_FORBIDDEN)
+    
+    def get(self,request):
+        if check_duration_kc():
+            return Response("1",status=status.HTTP_200_OK)
+        else:
+            return Response("0",status=status.HTTP_403_FORBIDDEN)
 
 
 @permission_classes([IsAuthenticated])
